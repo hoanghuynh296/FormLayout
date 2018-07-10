@@ -158,10 +158,10 @@ override fun onCreate(savedInstanceState: Bundle?) {
  ```
  ### Result
  #### Show all error in one text view
- ![Each edit text has one error view](https://lh3.googleusercontent.com/1qpPGytsRNlW3GC4CQS1Z9qCoUPKoA3mN85AprUtXXs0je1pqqfUaM9mOIbXpxXptny0ONsPqYhHnDtkRD8u=w1920-h948-rw)
+ ![Each edit text has one error view](http://i1214.photobucket.com/albums/cc484/giuse96suoire/Screenshot_2018-07-10-14-18-33-086_vn.semicolon.semicolonlib_zpspeyhgg7y.png)
  
  #### Each edit text has one error view
- ![Each edit text has one error view](https://lh4.googleusercontent.com/iIIQtmmzqGC2eq0aQoGeUqAVqcdYNDZtVklbvW8_Pt-Ogin0i2TXbkdrkYmNzdEJQXwTk46AItX25RaZUTfU=w1920-h948-rw)
+ ![Each edit text has one error view](http://i1214.photobucket.com/albums/cc484/giuse96suoire/Screenshot_2018-07-10-14-27-47-337_vn.semicolon.semicolonlib_zpsmrvvqndv.png)
  # SOMETHING IMPORTANCE
 1. This layout extends Relative layout, thus you will layout as Relative layout's rule
 2. Use ```errorViewTag``` instead of ```errorViewId```, ```errorViewId``` will exist in next version
