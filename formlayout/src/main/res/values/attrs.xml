@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <declare-styleable name="FormLayout">
+        <attr name="errorViewIdForAll" format="integer" />
+        <attr name="errorViewTagForAll" format="string" />
+        <attr name="requiredErrorMessageForAll" format="string" />
+        <attr name="minValueErrorMessageForAll" format="string" />
+        <attr name="maxValueErrorMessageForAll" format="string" />
+        <attr name="maxLengthErrorMessageForAll" format="string" />
+        <attr name="minLengthErrorMessageForAll" format="string" />
+    </declare-styleable>
+    <declare-styleable name="FormLayout_Layout">
+        <attr name="isRequired" format="boolean" />
+        <attr name="maxValue" format="integer" />
+        <attr name="minValue" format="integer" />
+        <attr name="maxLength" format="integer" />
+        <attr name="minLength" format="integer" />
+        <attr name="errorViewId" format="integer" />
+        <attr name="errorViewTag" format="string" />
+        <attr name="requiredErrorMessage" format="string" />
+        <attr name="minValueErrorMessage" format="string" />
+        <attr name="maxValueErrorMessage" format="string" />
+        <attr name="maxLengthErrorMessage" format="string" />
+        <attr name="minLengthErrorMessage" format="string" />
+    </declare-styleable>
+</resources>
