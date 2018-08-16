@@ -40,7 +40,7 @@ class FormLayout : RelativeLayout, FormLayoutBehavior {
         var isOk = true
         for (i in 0 until childCount) {
             val view = getChildAt(i) ?: continue
-            if (view is TextView) {
+            if (view is TextView && view.visibility == View.VISIBLE) {
                 val param = view.layoutParams as LayoutParams
                 // handle case required
                 if (param.isRequired) {
