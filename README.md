@@ -219,13 +219,13 @@ Everything has its advantages and disadvantages, please consider carefully befor
     </vn.semicolon.form.FormLayout>
 ```
 ## What's next?
-In version 1.0, there're many inconveniences: [Fixed in version 1.0.1] [27/10/2018]
-~~1. Can't use String resource id in ```app:requiredErrorMessage```, ```app:maxLengthErrorMessage```,...
-2. Only 3 cases to validate
-3. Use tag to determine error view (maybe you like using @id instead)~~  
-In version 1.1, there're many inconveniences: 
-1. Can't validate input in nestest view group in FormLayout
-Don't worry, I'll update it to version ~~1.0.1~~ 1.0.2, and everything will be ok
+In version 1.0, there're many inconveniences: [Fixed in version 1.0.1] [27/10/2018] </br>
+~~1. Can't use String resource id in ```app:requiredErrorMessage```, ```app:maxLengthErrorMessage```,... </br>
+2. Only 3 cases to validate </br>
+3. Use tag to determine error view (maybe you like using @id instead)~~ </br>
+In version 1.0.1, there're many inconveniences: 
+1. Can't validate input in nestest view group in FormLayout </br>
+Don't worry, I'll update it to version ~~1.0.1~~ 1.0.2, and everything will be ok. Or you can create new branch and improve it with me. Many thanks! 
 # RATE ME IF YOU FEEL IT IS USEFUL, THANK YOU!
 
 
