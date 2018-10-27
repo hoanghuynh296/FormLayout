@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <declare-styleable name="FormLayout">
-        <attr name="errorViewIdForAll" format="integer" />
+        <attr name="showToastForErrorMessage" format="boolean" />
+        <attr name="errorViewIdForAll" format="reference" />
         <attr name="errorViewTagForAll" format="string" />
-        <attr name="requiredErrorMessageForAll" format="string" />
-        <attr name="minValueErrorMessageForAll" format="string" />
-        <attr name="maxValueErrorMessageForAll" format="string" />
-        <attr name="maxLengthErrorMessageForAll" format="string" />
-        <attr name="minLengthErrorMessageForAll" format="string" />
+        <attr name="requiredErrorMessageForAll" format="string|reference" />
+        <attr name="minValueErrorMessageForAll" format="string|reference" />
+        <attr name="maxValueErrorMessageForAll" format="string|reference" />
+        <attr name="maxLengthErrorMessageForAll" format="string|reference" />
+        <attr name="minLengthErrorMessageForAll" format="string|reference" />
     </declare-styleable>
     <declare-styleable name="FormLayout_Layout">
         <attr name="isRequired" format="boolean" />
@@ -17,10 +18,17 @@
         <attr name="minLength" format="integer" />
         <attr name="errorViewId" format="integer" />
         <attr name="errorViewTag" format="string" />
-        <attr name="requiredErrorMessage" format="string" />
-        <attr name="minValueErrorMessage" format="string" />
-        <attr name="maxValueErrorMessage" format="string" />
-        <attr name="maxLengthErrorMessage" format="string" />
-        <attr name="minLengthErrorMessage" format="string" />
+        <attr name="compareWith" format="reference" />
+        <attr name="compareErrorMessage" format="string|reference" />
+        <attr name="requiredErrorMessage" format="string|reference" />
+        <attr name="minValueErrorMessage" format="string|reference" />
+        <attr name="maxValueErrorMessage" format="string|reference" />
+        <attr name="maxLengthErrorMessage" format="string|reference" />
+        <attr name="minLengthErrorMessage" format="string|reference" />
+        <attr name="validateRegex" format="string|enum|reference">
+            <enum name="email" value="0" />
+        </attr>
+        <attr name="validateRegexErrorMessage" format="string|reference" />
     </declare-styleable>
 </resources>
+

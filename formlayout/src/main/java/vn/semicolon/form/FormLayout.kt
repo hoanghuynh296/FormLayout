@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
+import java.util.regex.Pattern
 
 
 const val NOT_SET = -6969
 
 class FormLayout : RelativeLayout, FormLayoutBehavior {
-    private var mErrorViewTagForAll: String? = null
+    private var mErrorViewIdForAll: Int? = null
     private var mRequiredErrorMessageForAll: String? = null
     private var mMaxValueErrorMessageForAll: String? = null
     private var mMinValueErrorMessageForAll: String? = null
@@ -20,26 +22,29 @@ class FormLayout : RelativeLayout, FormLayoutBehavior {
     private var mMinLengthErrorMessageForAll: String? = null
     private var mIsHideErrorMessageWhenOk = false
     private var mHideErrorMessageMode = View.GONE
+    private var mIsShowToastForErrorMessage: Boolean? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
         val ta = context?.obtainStyledAttributes(attrs, R.styleable.FormLayout, 0, 0)
         try {
-            mErrorViewTagForAll = ta?.getString(R.styleable.FormLayout_errorViewTagForAll)
+            mErrorViewIdForAll = ta?.getResourceId(R.styleable.FormLayout_errorViewIdForAll, NOT_SET)
             mRequiredErrorMessageForAll = ta?.getString(R.styleable.FormLayout_requiredErrorMessageForAll)
             mMaxValueErrorMessageForAll = ta?.getString(R.styleable.FormLayout_maxValueErrorMessageForAll)
             mMinValueErrorMessageForAll = ta?.getString(R.styleable.FormLayout_minValueErrorMessageForAll)
             mMaxLengthErrorMessageForAll = ta?.getString(R.styleable.FormLayout_maxLengthErrorMessageForAll)
             mMinLengthErrorMessageForAll = ta?.getString(R.styleable.FormLayout_minLengthErrorMessageForAll)
+            mIsShowToastForErrorMessage = ta?.getBoolean(R.styleable.FormLayout_showToastForErrorMessage, false)
         } finally {
             ta?.recycle()
         }
     }
 
+
     override fun validate(): Boolean {
         var isOk = true
         for (i in 0 until childCount) {
-            val view = getChildAt(i) ?: continue
+            val view = getChildAt(i)
             if (view is TextView && view.visibility == View.VISIBLE) {
                 val param = view.layoutParams as LayoutParams
                 // handle case required
@@ -123,6 +128,29 @@ class FormLayout : RelativeLayout, FormLayoutBehavior {
                     }
 
                 }
+                // handle case campare with another view's value
+                if (param.compareWith != NOT_SET) {
+                    val target = findViewById<TextView>(param.compareWith)
+                    if (target != null) {
+                        if (view.text.toString() == target.text.toString()) {
+                            clearError(view)
+                        } else {
+                            if (!param.compareErrorMessage.isNullOrEmpty())
+                                showError(view, param.compareErrorMessage!!)
+                            isOk = false
+                        }
+                    } else throw Exception("Target to compare is null! Please check!")
+                }
+                // handle case validate format, ex: email, phone number,..
+                if (!param.validateRegex.isNullOrEmpty()) {
+                    if (isStringValid(view.text.toString(), FormLayoutRegex.validateRegex(param.validateRegex!!))) {
+                        clearError(view)
+                    } else {
+                        if (!param.validateRegexErrorMessage.isNullOrEmpty())
+                            showError(view, param.validateRegexErrorMessage!!)
+                        isOk = false
+                    }
+                }
             }
         }
         return isOk
@@ -130,44 +158,43 @@ class FormLayout : RelativeLayout, FormLayoutBehavior {
 
     private fun clearError(view: View) {
         val params = view.layoutParams as LayoutParams
-        val errorViewTag = params.errorViewTag
-        var errorView: View? = null
-        if (!TextUtils.isEmpty(errorViewTag)) {
-            errorView = findViewWithTag<View>(errorViewTag)
-        } else if (!TextUtils.isEmpty(mErrorViewTagForAll)) {
-            errorView = findViewWithTag<View>(mErrorViewTagForAll)
-        }
-        if (errorView != null && errorView is TextView) {
-            errorView.text = ""
-            if (mIsHideErrorMessageWhenOk) errorView.visibility = mHideErrorMessageMode
-        }
+        val errorViewId = params.errorViewId
+        val errorView: View? = findViewById(errorViewId)
+        (errorView as? TextView)?.text = ""
+        if (mIsHideErrorMessageWhenOk) errorView?.visibility = mHideErrorMessageMode
     }
 
     private fun showError(view: View, message: String) {
         view.requestFocus()
         val params = view.layoutParams as LayoutParams
-        val errorViewTag = params.errorViewTag
-
-        if (!TextUtils.isEmpty(errorViewTag)) {
-            bindErrorText(errorViewTag!!, message)
-        } else if (!TextUtils.isEmpty(mErrorViewTagForAll)) {
-            bindErrorText(mErrorViewTagForAll!!, message)
+        val errorViewId = params.errorViewId
+        if (mIsShowToastForErrorMessage != null && mIsShowToastForErrorMessage!!) {
+            Toast.makeText(context.applicationContext, message, Toast.LENGTH_SHORT).show()
+        } else if (errorViewId != NOT_SET) {
+            bindErrorText(errorViewId, message)
+        } else if (mErrorViewIdForAll != NOT_SET) {
+            bindErrorText(mErrorViewIdForAll!!, message)
         }
     }
 
 
-    private fun bindErrorText(errorViewTag: String, message: String) {
-        val errorView = findViewWithTag<View>(errorViewTag)
+    private fun bindErrorText(errorViewId: Int, message: String) {
+        val errorView = findViewById<View>(errorViewId)
         if (errorView.visibility == View.GONE || errorView.visibility == View.INVISIBLE) {
             mHideErrorMessageMode = errorView.visibility
             mIsHideErrorMessageWhenOk = true
             errorView.visibility = View.VISIBLE
         }
-        if (errorView is TextView) {
-            errorView.text = message
-        } else {
-            throw Exception("Error view should be a TextView")
+        (errorView as? TextView)?.text = message
+    }
+
+    private fun isStringValid(string: String, regexToValidate: String): Boolean {
+        val pattern = Pattern.compile(regexToValidate)
+        val matcher = pattern.matcher(string)
+        if (!matcher.matches()) {
+            return false
         }
+        return true
     }
 
     override fun generateLayoutParams(attrs: AttributeSet): LayoutParams {
@@ -194,12 +221,15 @@ class FormLayout : RelativeLayout, FormLayoutBehavior {
         var minValue: Int = NOT_SET
         var maxValue: Int = NOT_SET
         var errorViewId: Int = NOT_SET
-        var errorViewTag: String? = null
+        var compareWith: Int = NOT_SET
         var requiredErrorMessage: String? = null
         var maxValueErrorMessage: String? = null
         var minValueErrorMessage: String? = null
         var maxLengthErrorMessage: String? = null
         var minLengthErrorMessage: String? = null
+        var compareErrorMessage: String? = null
+        var validateRegex: String? = null
+        var validateRegexErrorMessage: String? = null
 
         constructor() : super(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         constructor(width: Int, height: Int) : super(width, height)
@@ -213,13 +243,16 @@ class FormLayout : RelativeLayout, FormLayoutBehavior {
                 minLength = ta.getInt(R.styleable.FormLayout_Layout_minLength, NOT_SET)
                 minValue = ta.getInt(R.styleable.FormLayout_Layout_minValue, NOT_SET)
                 maxValue = ta.getInt(R.styleable.FormLayout_Layout_maxValue, NOT_SET)
-                errorViewId = ta.getInt(R.styleable.FormLayout_Layout_errorViewId, NOT_SET)
-                errorViewTag = ta.getString(R.styleable.FormLayout_Layout_errorViewTag)
+                compareWith = ta.getResourceId(R.styleable.FormLayout_Layout_compareWith, NOT_SET)
+                errorViewId = ta.getResourceId(R.styleable.FormLayout_Layout_errorViewId, NOT_SET)
                 requiredErrorMessage = ta.getString(R.styleable.FormLayout_Layout_requiredErrorMessage)
                 maxValueErrorMessage = ta.getString(R.styleable.FormLayout_Layout_maxValueErrorMessage)
                 minValueErrorMessage = ta.getString(R.styleable.FormLayout_Layout_minValueErrorMessage)
                 maxLengthErrorMessage = ta.getString(R.styleable.FormLayout_Layout_maxLengthErrorMessage)
                 minLengthErrorMessage = ta.getString(R.styleable.FormLayout_Layout_minLengthErrorMessage)
+                compareErrorMessage = ta.getString(R.styleable.FormLayout_Layout_compareErrorMessage)
+                validateRegex = ta.getString(R.styleable.FormLayout_Layout_validateRegex)
+                validateRegexErrorMessage = ta.getString(R.styleable.FormLayout_Layout_validateRegexErrorMessage)
             } finally {
                 ta.recycle()
             }
@@ -227,8 +260,20 @@ class FormLayout : RelativeLayout, FormLayoutBehavior {
 
     }
 
-    fun isNumeric(str: String): Boolean {
+    private fun isNumeric(str: String): Boolean {
         return str.matches("-?\\d+(\\.\\d+)?".toRegex())  //match a number with optional '-' and decimal.
+    }
+}
+
+object FormLayoutRegex {
+    const val EMAIL = "^([_a-zA-Z0-9-]+(\\\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\\\.[a-zA-Z0-9-]+)*(\\\\.[a-zA-Z]{1,6}))?\$"
+    fun validateRegex(regex: String): String {
+        when (regex) {
+            "0" -> {
+                return EMAIL
+            }
+        }
+        return regex
     }
 }
 
