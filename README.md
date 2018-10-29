@@ -226,6 +226,12 @@ In version 1.0, there're many inconveniences: [Fixed in version 1.0.1] [27/10/20
 In version 1.0.1, there're many inconveniences: 
 1. Can't validate input in nestest view group in FormLayout </br>
 Don't worry, I'll update it to version ~~1.0.1~~ 1.0.2, and everything will be ok. Or you can create new branch and improve it with me. Many thanks! 
+
+## Contact Author
+
+* hoanghuynh296@gmail.com
+* https://www.facebook.com/manhhoanghuynh
+
 # RATE ME IF YOU FEEL IT IS USEFUL, THANK YOU!
 
 
