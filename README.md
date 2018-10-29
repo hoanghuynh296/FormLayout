@@ -14,7 +14,7 @@ allprojects {
 Add the following dependency to your `build.gradle` file: 
 ```
 dependencies {
-    implementation 'com.github.hoanghuynh296:FormLayout:1.0'
+    implementation 'com.github.hoanghuynh296:FormLayout:1.0.1'
 }
 ```
 # Usage
